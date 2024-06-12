@@ -1,0 +1,96 @@
+Archivo de entrada nombre: envios.txt
+
+1° Linea del archivo 
+HC  -> Direccion destino  solo letras y digitos ( Los caracteres del 9 al 28 )
+    -> No haya dos mayusculas seguidas
+    -> Al menos una cadena compuesta solo por digitos
+
+SC -> Pasa todo
+
+2° Resto de las lineas
+
+-> Caracteres del 0 al 8 (o sea, 9 caracteres): El código postal
+
+-> Caracteres del 9 al 28 (o sea, 20 caracteres): Direccion fisica
+    - Remover los espacios en blanco antes de procesar la cadena (Usar Trim)
+
+-> Caracter 29: El tipo de envío.
+
+-> Caracter 30: La forma de pago
+
+▪ Resultado 1 (r1): Tipo de control de direcciones detectado en la línea de timestamp:  
+    Mostrar la cadena “Hard Control” o la cadena “Soft Control” de acuerdo a si en la línea de timestamp del archivo se detectó la secuencia “HC” o 
+    la secuencia “SC” respectivamente. Se aceptarán como válidas solamente las cadenas “Hard Control” o “Soft Control”, 
+    en cualquier combinación de minúsculas o mayúsculas.
+
+▪ Resultados 2 y 3 (r2 y r3): Si el tipo de control de direcciones era HC, mostrar la cantidad de envíos con dirección válida (r2), 
+    y la cantidad de envíos con dirección no válida (r3). Recordar que si el tipo de control es HC, 
+    entonces se considera que una dirección es válida si cumple que tiene solo letras y dígitos, 
+    y que no tenga dos mayúsculas seguidas, y que tenga al menos una palabra compuesta sólo por dígitos.
+
+▪ Si el tipo de control de direcciones era SC, mostrar entonces la cantidad total de envíos (r2) 
+    (que en este caso significará que todas las direcciones son válidas), y muestre un cero en el resultado r3 (indicando con ello que no hay direcciones inválidas. PERO MUESTRE EL CERO).
+
+▪ Resultado 4 (r4): El importe final acumulado por todos los envíos. Si el tipo de control era HC, hay que acumular solo los importes finales de los envíos con direcciones válidas. Si el tipo de control era SC, hay que acumular todos los importes finales, de todos los envíos.
+
+▪ Resultados 5, 6 y 7 (r5, r6 y r7): La cantidad de envíos como Carta Simple (r5), como Carta Certificada (r6) o como Carta Expresa (r7) 
+(tres contadores, uno para cada tipo de carta). De nuevo, si el tipo de control era HC, hay que contar solo los envíos con direcciones válidas. Si el tipo de control era SC, hay que contar todos los envíos.
+
+▪ Resultado 8 (r8): Tomando los tres conteos del punto anterior, indicar cuál es el tipo de carta con mayor cantidad de envíos. 
+    Las cadenas a mostrar deben ser de la forma “Carta Simple” o “Carta Certificada” o “Carta Expresa”, y 
+        solo alguna de esas tres, en cualquier combinación de minúsculas y mayúsculas. 
+        Si el mayor conteo estuviese repetido, informe el tipo de carta más sencillo entre los que se repiten 
+        (ejemplo: si el mayor conteo fuese el de las simples y fuese igual al de las expresas, informe que el tipo mayor es “Carta Simple”).
+
+▪ Resultados 9 y 10 (r9 y r10): Indicar cuál es el CP del primero de los envíos del archivo (r9), 
+        y la cantidad de veces que apareció ese CP en el archivo (r10). 
+        Para los resultados r9 y r10, no considerar el tipo de control de direcciones 
+        (dar los resultados sin importar si el tipo de control era HC o SC).
+
+▪ Resultados 11 y 12 (r11 y r12): El menor importe final pagado por un envío a Brasil (r11) y  el CP de ese envío (r12). 
+        Si ese menor importe final se repite en más de un envío, tomar el primero que haya encontrado para el menor importe e informar el CP de ese. 
+        Para los resultados r11 y r12, no considerar el tipo de control de direcciones (dar los resultados sin importar si el tipo de control era HC o SC).
+
+▪ Resultado 13 (r13): El porcentaje que representa la cantidad total de envíos al exterior sobre la cantidad total de envíos. 
+        Si el tipo de control era HC, hay que contar solo los envíos con direcciones válidas. 
+        Si el tipo de control era SC, hay que contar todos los envíos. El porcentaje debe mostrarse en forma truncada, sin decimales 
+        (realizar primero la multiplicación, y luego la división. Haga el cálculo con división real, y al final trunque el resultado usando la función int()). 
+        Prevea que el programa no se clave por una eventual división por cero: si el porcentaje no puede calcularse, muestre un cero como resultado.
+
+▪ Resultado 14 (r14): El monto final promedio pagado por los envíos a la provincia de Buenos Aires. 
+        Si el tipo de control era HC, hay que sumar solo los precios finales de los envíos con direcciones válidas. 
+        Si el tipo de control era SC, hay que sumar los precios finales de todos los envíos. 
+        El promedio debe mostrarse en forma truncada, sin decimales (haga el cálculo con división real, y al final trunque el resultado usando la función int()). 
+        Prevea que el programa no se clave por una eventual división por cero: si el promedio no puede calcularse, muestre un cero como resultado.
+
+-> Func Division por 0
+
+-> Apertura del archivo
+
+-> Func - Verificacion de HC - SC 
+    -Un retorno si es HC o SC para el r1 ( “Hard Control” o “Soft Control”)
+
+-> Func - Control de HC
+    - Un contador que cuente los envios invalidos (r3)
+
+-> Func - Sacar los datos txt Return " CP[] - Dire[] - Carta_id[] - Pago[] - Valido[] "
+    - Un contador que cuente los envios validos  (r2)
+
+-> Func - Sumar/contar precios_envio 
+    - Suma de precios_envio validos (r4) -> Usar Func Precios de envio
+    - Contar cantidad envios totales y la del exterior ( sacar un % truncado sobre el total)
+    - Monto final prom envios Bs As.
+
+-> Func - Contar tipo de carta
+    - Cuenta las distintas cartas (r5,r6,r7) SOLO LOS VALIDOS
+    - Devolver el mayor (r8) (“Carta Simple” o “Carta Certificada” o “Carta Expresa”) SI SE REPITE ALGUNO TOMAR EL MAS SENCILLO
+
+-> Func - Buscar primer Cp y cant de repeticiones
+    - Primer CP (r9)
+    - Cant de apariciones (r10)
+
+-> Func - Precios de envio Return - Precio_envio[]
+    - Sacar el min de precio_envio de BR (r11) y  CP(r12)
+
+-> Func - Contar env
+    - Pensar en realizar un Control de SC (Para llevar cuenta de validos! (r2))
