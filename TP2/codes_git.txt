@@ -1,1 +1,58 @@
----> Construir una rama 
+Configuración Inicial
+
+git config --global user.name "Tu Nombre": Configura tu nombre de usuario global.
+git config --global user.email "tu.email@ejemplo.com": Configura tu correo electrónico global.
+git config --global core.editor "nombre_del_editor": Configura tu editor de texto preferido.
+
+Creación y Clonación de Repositorios
+
+git init: Inicializa un nuevo repositorio de Git.
+git clone <url_del_repositorio>: Clona un repositorio existente desde una URL.
+
+Manejo de Archivos
+
+git add <archivo>: Añade un archivo específico al área de preparación.
+git add .: Añade todos los archivos al área de preparación.
+git commit -m "mensaje del commit": Realiza un commit de los archivos en el área de preparación con un mensaje.
+git rm <archivo>: Elimina un archivo del repositorio y del sistema de archivos.
+git mv <archivo_origen> <archivo_destino>: Mueve o renombra un archivo.
+
+Ramas (Branches)
+
+git branch: Muestra todas las ramas del repositorio.
+git branch <nombre_de_rama>: Crea una nueva rama.
+git checkout <nombre_de_rama>: Cambia a la rama especificada.
+git checkout -b <nombre_de_rama>: Crea y cambia a una nueva rama.
+git merge <nombre_de_rama>: Fusiona la rama especificada con la rama actual.
+git branch -d <nombre_de_rama>: Elimina la rama especificada.
+
+Actualización y Sincronización
+
+git fetch: Descarga objetos y referencias desde otro repositorio.
+git pull: Descarga e incorpora cambios desde un repositorio remoto.
+git push: Sube tus commits a un repositorio remoto.
+
+Inspección y Comparación
+
+git status: Muestra el estado de los archivos en el directorio de trabajo y el área de preparación.
+git log: Muestra el historial de commits.
+git diff: Muestra las diferencias entre los cambios en el directorio de trabajo y el área de preparación.
+git diff <rama1> <rama2>: Muestra las diferencias entre dos ramas.
+
+Revertir Cambios
+
+git reset <archivo>: Saca un archivo del área de preparación.
+git reset --hard: Resetea el área de preparación y el directorio de trabajo al último commit.
+git revert <hash_del_commit>: Crea un nuevo commit que deshace el commit especificado.
+
+Repositorios Remotos
+
+git remote: Muestra los repositorios remotos configurados.
+git remote add <nombre> <url>: Añade un nuevo repositorio remoto.
+git remote remove <nombre>: Elimina un repositorio remoto.
+
+Etiquetas (Tags)
+
+git tag: Muestra todas las etiquetas (tags).
+git tag -a <nombre_etiqueta> -m "mensaje": Crea una nueva etiqueta anotada.
+git push origin <nombre_etiqueta>: Sube una etiqueta a un repositorio remoto.
