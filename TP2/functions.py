@@ -3,10 +3,10 @@ def main_arch(name_text, flg_open = True, arch = None):
         arch = open(name_text,'rt')
         return arch
     else:
-        arch.close()
+        arch.close() 
 
 def read_line(arch_texto):
-    text_line = arch_texto.readline()
+    text_line = arch_texto.readline() 
     if  text_line == '':
         main_arch('-1', False, arch_texto)  
     return text_line
@@ -17,13 +17,13 @@ def type_control(line_text):
 def analyze_line (text_line,control): 
     codpos_line,address_line,id_type_shipment_line,waypay_line = text_line[:9].strip(),text_line[9:29].strip(),int(text_line[29]),int(text_line[30]) 
     
-    country,province,charge_shipment = analyze_codpos(codpos_line)
+    country_shipment,province_shipment,charge_shipment = analyze_codpos(codpos_line)
     
     cost_shipment = calculate_shipment(charge_shipment,id_type_shipment_line,waypay_line)
     
     address_flg = True if 'Soft Control' == control else valid_address(address_line) 
     
-    return address_flg,cost_shipment,id_type_shipment_line,codpos_line
+    return address_flg,cost_shipment,id_type_shipment_line,codpos_line,country_shipment,province_shipment
 
 def analyze_codpos(cod_pos):
 
@@ -36,25 +36,27 @@ def analyze_codpos(cod_pos):
     
     cod_pos = cod_pos.upper()
 
-    if cod_pos.isdigit():
-        if len(cod_pos) == 4:
+    large_codpos = len(cod_pos)
+
+    if isdigit(cod_pos):
+        if large_codpos == 4:
             country_codpos = 'Bolivia'
             charge_shipment_codpos = 1.20
-        elif len(cod_pos) == 5:
+        elif large_codpos == 5:
             country_codpos = 'Uruguay'
             charge_shipment_codpos = 1.2 if cod_pos[0] == '1'  else 1.25
-        elif len(cod_pos) == 6:
+        elif large_codpos == 6:
             country_codpos = 'Paraguay'
             charge_shipment_codpos = 1.20
-        elif len(cod_pos) == 7:
+        elif large_codpos == 7:
             country_codpos = 'Chile'
             charge_shipment_codpos = 1.25
         else:
             country_codpos = 'Otro'
             charge_shipment_codpos = 1.5
     else:
-        if len(cod_pos) == 8:
-            if 'AAAA' <= (cod_pos[0] + cod_pos[5:8]) <= 'ZZZZ': #cod_pos[0].isalpha() and cod_pos[-1].isalpha() and cod_pos[-2].isalpha() and cod_pos[-3].isalpha():
+        if large_codpos == 8:
+            if not(isdigit(cod_pos[0] + cod_pos[5:8])) and isdigit(cod_pos[1:5]): #cod_pos[0].isalpha() and cod_pos[-1].isalpha() and cod_pos[-2].isalpha() and cod_pos[-3].isalpha():
                 if not(cod_pos[0].upper() in ('I','O') ):
                     country_codpos = 'Argentina'
                     charge_shipment_codpos = 1
@@ -64,7 +66,8 @@ def analyze_codpos(cod_pos):
             else:
                 country_codpos = 'Otro'
                 charge_shipment_codpos = 1.5
-        elif len(cod_pos) == 9 and cod_pos[5] == '-' and cod_pos.replace('-', '').isdigit():
+        
+        elif large_codpos == 9 and cod_pos[5] == '-' and isdigit(cod_pos.replace('-', '')):
             country_codpos = 'Brasil'
             if  cod_pos[0] in ('8','9'): 
                 charge_shipment_codpos = 1.20
@@ -79,9 +82,20 @@ def analyze_codpos(cod_pos):
     if country_codpos != 'Argentina':
         province_codpos = 'No Aplica'
     else:
-        province_codpos = prov_tup[letter_tup.index(cod_pos[0])] 
-
+        province_codpos = prov_tup[letter_tup.index(cod_pos[0])]
+    print(cod_pos,"-",country_codpos,"-",large_codpos)
+    #input()
     return country_codpos,province_codpos,charge_shipment_codpos
+
+
+def isdigit(text):
+    flg = True
+    text = str(text)
+    for char in text:
+        if not('0' <= char <= '9'):
+            flg = False
+    return flg
+
 
 def calculate_shipment(charge_shipment,type_shipment,waypay):
     type_shipment_cost_tup = (1100,1800,2450,8300,10900,14300,17900)
@@ -135,7 +149,19 @@ def max_type_shipment(simple_letter, registered_letter, express_letter):
         type_max = 2
     return type_shipment_tup[type_max]
 
-def print_result(control,cedvalid,cedinvalid,imp_acu_total,ccs,ccc,cce,tipo_mayor,primer_cp,cant_primer_cp,menimp,mencp,porc,prom):
+def calculate_porc_inter(count_shipment,valid_shipment):
+    if valid_shipment == 0:
+        return 0
+    else:
+        return int((count_shipment*100)/valid_shipment)
+
+def calculate_avg_bsas(sum_import,count_shipment):
+    if count_shipment == 0:
+        return 0
+    else:
+        return int(sum_import/count_shipment)
+
+def print_result(control,cedvalid,cedinvalid,imp_acu_total,ccs,ccc,cce,tipo_mayor,primer_cp,cant_primer_cp,menimp=0,mencp=0,porc=0,prom=0):
      
      print(' (r1) - Tipo de control de direcciones:', control)
      print(' (r2) - Cantidad de envios con direccion valida:', cedvalid)
