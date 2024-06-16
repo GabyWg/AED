@@ -1,5 +1,4 @@
 import functions as func
-import prueba
 
 ##### ARCHIVOS DE PRUEBA (DEJAR COMENTADO)
 #NAME_TEXT = 'envios25.txt'
