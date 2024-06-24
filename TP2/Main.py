@@ -1,12 +1,15 @@
 import functions as func
 
+#PARA REVISAR LOS CAMBIOS QUE SE HAN REALIZADO DESPUES DE LA NOTA BUSCAR -> 'Cod_Revisar'
+
 ##### ARCHIVOS DE PRUEBA (DEJAR COMENTADO)
 #NAME_TEXT = 'envios25.txt'
 # NAME_TEXT = 'envios100SC.txt'
 # NAME_TEXT = 'envios100HC.txt'
 
 ##### ARCHIVO PARA LA CORRIDA DEL TP2 (DESCOMENTAR !!!!!!!!!!!!) DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR DESCOMENTAR
-NAME_TEXT = 'envios.txt'
+#NAME_TEXT = 'envios.txt'
+NAME_TEXT = 'envios500b.txt'
 
 def principal ():
     control_r1 = None #RTA_1
@@ -52,7 +55,8 @@ def principal ():
                     count_inter_shipment += 1
                 else:
                     if province_shipment == 'Provincia de Buenos Aires':
-                        sum_import_bsas =+ import_shipment
+                        #Antes del cambio ->  sum_import_bsas =+ import_shipment     Cod_Revisar
+                        sum_import_bsas += import_shipment
                         count_shipment_bsas += 1
 
                 if 0 <= id_type_shipment <= 2:
@@ -79,8 +83,8 @@ def principal ():
     func.main_arch('-1', False, arch_text)  
 
     max_shipment_type = func.max_type_shipment(simple_letter_valid, registered_letter_valid, express_letter_valid) # RTA_8
-
-    porc_inter_shipment = func.calculate_porc_inter(count_inter_shipment,valid_shipment )# +invalid_shipment )  #RTA_13
+    #porc_inter_shipment = func.calculate_porc_inter(count_inter_shipment,valid_shipment )#  +invalid_shipment )  #RTA_13 Antes del Cambio Cod_Revisar
+    porc_inter_shipment = func.calculate_porc_inter(count_inter_shipment,valid_shipment   +invalid_shipment )  #RTA_13
 
     # Si sigo la consigna del Punto 13, no me dan los resultados de ninguno de los Hard Control //
     # pero si sumo los pedidos invalidos e validos si me dan los resultados ### Por ahora lo dejaremos tal cual la consigna del 13

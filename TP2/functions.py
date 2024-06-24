@@ -176,3 +176,4 @@ def print_result(control,cedvalid,cedinvalid,imp_acu_total,ccs,ccc,cce,tipo_mayo
      print('(r12) - Codigo postal del envio a Brasil con importe menor:', mencp)
      print('(r13) - Porcentaje de envios al exterior sobre el total:', porc)
      print('(r14) - Importe final promedio de los envios Buenos Aires:', prom)
+    
