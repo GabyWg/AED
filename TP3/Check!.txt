@@ -1,0 +1,37 @@
+- Crear un tipo registro llamado "Envio", con los atributos de un envio
+
+A- Construir un menu que contenga los siguientes opciones
+
+1- Crear un arreglo de registros que tenga los datos del txt.
+    -> Si esta opcion se elije de nuevo, el arreglo debe ser creado de 0.
+    -> Agregar un msj de advertencia al usuario advirtiendo de la catastrofe que va a hacer (dejando elegir si seguir con esto o no).
+    -> Si no existe el arreglo, hay que crearlo y agregar los datos del txt.
+
+2- Cargar por teclado los datos del envio.
+    -> Se deben aplicar procesos de validacion para los campos (Tipo de envio y forma de pago) y agregar estos datos al arreglo.
+    -> Agregar estos datos AL FINAL del arreglo, sin perder registros (append y listo).
+
+3- Mostrar todos los registros, ordenados por codigo postal de menor a mayor.
+    -> Una sola linea por registro.
+    -> Mostrar el pais en la misma linea del registro.
+    -> Agregar de mostrar todos los registros, o mostrar unos X primeros, cargando X por teclado (Indicar cuantos registros hay, antes de hacerlo elegir).
+    -> Ordenar por shellsort.
+
+4- Buscar si existe en el arreglo una direccion D y un tipo de envio E, siendo D y E valores que se cargan por teclado.
+    -> Si existe mostrar todos los datos, sino mandar un mensaje que no existe.
+    -> La busqueda se tiene que frenar con el primer registro encontrado.
+
+5- Buscar si existe en el arreglo un codigo postal D y tipo de envio E, siendo D y E valores que se cargan por teclado.
+    -> Si existe cambiar el valor del campo FORMA DE PAGO, si viene 1 cambiarlo por 2 y visevers
+    -> Si no existe, mandar un mensaje que no existe.
+    -> La busqueda se tiene que frenar con el primer registro encontrado.
+
+6- Si el tipo de TimeStamp es HC, determinar la cantidad de envios validos, para cada uno de los tipos de envios posibles. Si es SC cantidad de envios para los tipos de envios posibles.
+    -> Hacer un vector de conteo.
+
+7- Si el tipo de TimeStamp es HC, determinar importe final de los envios valido, para cada tipo de envio posible. Si es SC el importe final para todos los envios, para cada tipo de envio posible
+    -> Hacer un vector de sumatoria.
+
+8- En base al 7, mostrar el tipo de envio con mayor importe final acumulado, e indicar ademas que porcentaje representa ese monto mayor sobre el monto total.
+
+9- Calcular y mostrar el importe final promedio entre todos los envios del arreglo, e informar ademas cuantos envios tuvieron un importe menor a ese promedio.
