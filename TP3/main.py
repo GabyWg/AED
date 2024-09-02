@@ -1,9 +1,57 @@
 import functions as func
 import register as reg
+from os import system
 
-#PARA REVISAR LOS CAMBIOS QUE SE HAN REALIZADO DESPUES DE LA NOTA BUSCAR -> 'Cod_Revisar'
 
 NAME_TEXT = 'envios-tp3.txt'
+
+def main():
+    #Inicializacion de Variables
+    turns = True
+    value_option = 0
+    v_envios,v_datashipment = func.start_classes()
+    
+    while turns:
+        value_option = func.number_valid(0,9,func.text_menu())
+        system("cls") 
+        if len(v_envios) == 0 and value_option > 2:
+            print("""There is no shipping data loaded to continue.
+                  Please select option 1 or 2 to upload data.""")
+        else:
+            if value_option == 1:
+                if len(v_envios) == 0:
+                    func.load_data_text_shipment(v_envios,v_datashipment,NAME_TEXT) # Carga de archivos
+                    print(f"{len(v_envios)} data were loaded.")
+                else:
+                    answer = func.number_valid(0,1,f"You have {len(v_envios)} shipping data loaded, if you continue they will be deleted.\n0- Cancel operation.\n1- Continue.\nSelect an option: ")
+                    if answer == 1:
+                        v_envios,v_datashipment = func.start_classes()
+                        func.load_data_text_shipment(v_envios,v_datashipment,NAME_TEXT) # Carga de archivos
+                        print(f"{len(v_envios)} data were loaded.")
+                    else:
+                        print("Canceled Operation.")
+
+            elif value_option == 2:
+                func.load_data_keyboard_shipment(v_envios,v_datashipment)
+            elif value_option == 3:
+                pass
+            elif value_option == 4:
+                pass
+            elif value_option == 5:
+                pass
+            elif value_option == 6:
+                pass
+            elif value_option == 7:
+                pass
+            elif value_option == 8:
+                pass
+            elif value_option == 9:
+                pass
+            else: #Unico valor disponible sera el 0.
+                break
+        input("Press enter to continue.")
+        system("cls")
+        
 
 def principal ():
     control_r1 = None #RTA_1
@@ -103,4 +151,4 @@ def principal ():
 
 
 if __name__ == "__main__":
-    principal()
+    main()

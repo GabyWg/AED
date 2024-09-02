@@ -1,3 +1,97 @@
+import register as reg
+
+def text_menu(): #Funcion donde contenemos el menu
+    text="""
+1- Cargar datos de envios por archivo de texto.
+2- Cargar datos de envios por teclado.
+3- Mostrar datos de los envios.
+4- Busqueda de envios - Por Direccion y Tipo de Envio.
+5- Busqueda de envios - Por Codigo Postal.
+6- Cantidad de Envios.
+7- Importe final de Envios.
+8- Datos tipo de envio con mayor importe.
+9- Importe final promedio.
+0- Salida del programa.
+Select an option: """
+    return text
+
+def number_valid(min_num,max_num,sms): # Para validar el ingreso de numeros
+    n = int(input(sms))
+    while min_num > n or n > max_num:
+        print("Invalid option, select one of the available options.")
+        n = int(input(sms))
+    return n  
+
+
+def start_classes(v_envios=None,v_datashipment=None): # Para iniciar o resetear los vectores que contienen las clases
+    v_envios = []
+    v_datashipment = []
+
+    return v_envios,v_datashipment
+
+
+def load_data_text_shipment(v_ship,v_data,arch_name):
+    arch_text = main_arch(arch_name) 
+    type_control = None
+
+    # while text_line != '' :
+    for text_line in arch_text:
+        if type_control == None:
+            type_control = search_type_control(text_line)
+        else:
+            analyze_line(text_line,type_control,v_ship,v_data)
+        
+    main_arch('-1', False, arch_text)   #Cierra el archivo.
+
+def load_data_keyboard_shipment(v_ship,v_data):
+    cod_pos_flg = address_flg = type_shipment_flg = waypay_flg = True
+    sms = "0- Enter data again.\n1- Continue.\nSelect an option: "
+    struct_control = ''
+
+################################################################################################
+    while cod_pos_flg:
+        cod_pos = input("Enter the postal code: ")
+        country_shipment,province_shipment,charge_shipment = analyze_codpos(cod_pos)
+        print(f"The postal code entered is: {cod_pos}\n"
+              f"Postal code Country: {country_shipment}\n"
+              f"Postal code province: {province_shipment}\n"
+              f"Postal code shipping charge: {charge_shipment}\n")
+        number_flg = number_valid(0,1,sms)
+        if number_flg == 1:
+            cod_pos_flg = False
+################################################################################################
+    while address_flg:
+        address = input("Enter the address: ")
+        while struct_control != 'HC' and struct_control != 'SC':
+            struct_control = input("Enter shipping struct HC(Hard Control) or SC(Soft Control): ").upper()
+            address_valid = True if 'SC' == struct_control else valid_address(address) 
+        print(f"The address entered is: {address}\n"
+            f"Type of shipment entered: {struct_control}\n")
+        number_flg = number_valid(0,1,sms)
+        if number_flg == 1:
+            address_flg = False
+################################################################################################
+    while type_shipment_flg:
+        id_type_shipment = number_valid(0,6,"Enter the shipping type between values ​​0 and 6: ")
+        print(f"The shipping type entered is: {id_type_shipment}")
+        number_flg = number_valid(0,1,sms)
+        if number_flg == 1:
+            type_shipment_flg = False
+################################################################################################
+    while waypay_flg:
+        waypay = number_valid(1,2,"Enter the shipping type between values 1(Cash) and 2(Credit Card): ")
+        print(f"The shipping type entered is: {waypay}")
+        number_flg = number_valid(0,1,sms)
+        if number_flg == 1:
+            waypay_flg = False
+################################################################################################
+
+    cost_shipment = calculate_shipment(charge_shipment,id_type_shipment,waypay)
+
+    v_ship.append(reg.Envio(cod_pos,address,id_type_shipment,waypay))
+    v_data.append(reg.DataShipment(cost_shipment,address_valid,country_shipment,province_shipment)) # Construction is desc_type_shipment
+
+
 def main_arch(name_text, flg_open = True, arch = None): #Funcion que abre el archivo que se le envia, al finalizar la lectura se le enviar otros parametros de otra funcion para cerrar el mismo
     if flg_open:
         arch = open(name_text,'rt')
@@ -5,16 +99,12 @@ def main_arch(name_text, flg_open = True, arch = None): #Funcion que abre el arc
     else:
         arch.close()
 
-# def read_line(arch_texto): #Lee una linea del archivo que se le envia y devuelve la linea en cadena de texto, si la linea es vacia enviara parametros para cerrar el archivo a la funcion main_arch
-#     text_line = arch_texto.readline() 
-#     if  text_line == '':
-#         main_arch('-1', False, arch_texto)  
-#     return text_line
 
-def type_control(line_text): # Recibe una linea de texto y revisa que tipo de control es el indicado
+def search_type_control(line_text): # Recibe una linea de texto y revisa que tipo de control es el indicado
     return 'Hard Control' if 'HC' in line_text.upper() else 'Soft Control'
 
-def analyze_line (text_line,control): # Funcion principal, analiza toda la linea de envio (codigo postal, )
+
+def analyze_line (text_line,control,v_ship,v_data): # Funcion principal, analiza toda la linea de envio (codigo postal, )
 
     codpos_line,address_line,id_type_shipment_line,waypay_line = text_line[:9].strip(),text_line[9:29].strip(),int(text_line[29]),int(text_line[30]) 
     
@@ -22,9 +112,11 @@ def analyze_line (text_line,control): # Funcion principal, analiza toda la linea
     
     cost_shipment = calculate_shipment(charge_shipment,id_type_shipment_line,waypay_line)
     
-    address_flg = True if 'Soft Control' == control else valid_address(address_line) 
-    
-    return address_flg,cost_shipment,id_type_shipment_line,codpos_line,country_shipment,province_shipment
+    address_valid = True if 'Soft Control' == control else valid_address(address_line) 
+
+    v_ship.append(reg.Envio(codpos_line,address_line,id_type_shipment_line,waypay_line))
+    v_data.append(reg.DataShipment(cost_shipment,address_valid,country_shipment,province_shipment)) # Construction is desc_type_shipment
+
 
 def analyze_codpos(cod_pos): # Analiza el codigo postal, devuelve Pais, provincia y cargo del envio
 
@@ -57,7 +149,7 @@ def analyze_codpos(cod_pos): # Analiza el codigo postal, devuelve Pais, provinci
             charge_shipment_codpos = 1.5
     else:
         if large_codpos == 8:
-            if not(isdigit(cod_pos[0] + cod_pos[5:8])) and isdigit(cod_pos[1:5]): #cod_pos[0].isalpha() and cod_pos[-1].isalpha() and cod_pos[-2].isalpha() and cod_pos[-3].isalpha():
+            if not(isdigit(cod_pos[0] + cod_pos[5:8])) and isdigit(cod_pos[1:5]):
                 if not(cod_pos[0].upper() in ('I','O') ):
                     country_codpos = 'Argentina'
                     charge_shipment_codpos = 1
@@ -134,46 +226,29 @@ def valid_address(address_line): # Validacion de la direccion
         return True
     else:
         return False
-    
-def max_type_shipment(simple_letter, registered_letter, express_letter): # Me calcula el maximo de cantidad de los tipos de cartas y me devuelve el nombre del mismo
-    type_shipment_tup = ('Carta Simple','Carta Certificada','Carta Expresa')
-    if  simple_letter > registered_letter:
-        if simple_letter > express_letter:
-            type_max = 0
-        else:
-            type_max = 2
-    elif registered_letter > express_letter:
-        type_max = 1
-    else:
-        type_max = 2
-    return type_shipment_tup[type_max]
 
-def calculate_porc_inter(count_shipment,valid_shipment): # calcula el porcentaje de los envios internacionales sobre los totales
-    if valid_shipment == 0:
-        return 0
-    else:
-        return int((count_shipment*100)/valid_shipment)
 
-def calculate_avg_bsas(sum_import,count_shipment): # calcula el promedio del costo de envios a bs as
-    if count_shipment == 0:
-        return 0
-    else:
-        return int(sum_import/count_shipment)
+# def max_type_shipment(simple_letter, registered_letter, express_letter): # Me calcula el maximo de cantidad de los tipos de cartas y me devuelve el nombre del mismo
+#     type_shipment_tup = ('Carta Simple','Carta Certificada','Carta Expresa')
+#     if  simple_letter > registered_letter:
+#         if simple_letter > express_letter:
+#             type_max = 0
+#         else:
+#             type_max = 2
+#     elif registered_letter > express_letter:
+#         type_max = 1
+#     else:
+#         type_max = 2
+#     return type_shipment_tup[type_max]
 
-def print_result(control,cedvalid,cedinvalid,imp_acu_total,ccs,ccc,cce,tipo_mayor,primer_cp,cant_primer_cp,menimp,mencp,porc,prom): #Realiza una impresion de los resultados
-     
-     print(' (r1) - Tipo de control de direcciones:', control)
-     print(' (r2) - Cantidad de envios con direccion valida:', cedvalid)
-     print(' (r3) - Cantidad de envios con direccion no valida:', cedinvalid)
-     print(' (r4) - Total acumulado de importes finales:', imp_acu_total)
-     print(' (r5) - Cantidad de cartas simples:', ccs)
-     print(' (r6) - Cantidad de cartas certificadas:', ccc)
-     print(' (r7) - Cantidad de cartas expresas:', cce)
-     print(' (r8) - Tipo de carta con mayor cantidad de envios:', tipo_mayor)
-     print(' (r9) - Codigo postal del primer envio del archivo:', primer_cp)
-     print('(r10) - Cantidad de veces que entro ese primero:', cant_primer_cp)
-     print('(r11) - Importe menor pagado por envios a Brasil:', menimp)
-     print('(r12) - Codigo postal del envio a Brasil con importe menor:', mencp)
-     print('(r13) - Porcentaje de envios al exterior sobre el total:', porc)
-     print('(r14) - Importe final promedio de los envios Buenos Aires:', prom)
-    
+# def calculate_porc_inter(count_shipment,valid_shipment): # calcula el porcentaje de los envios internacionales sobre los totales
+#     if valid_shipment == 0:
+#         return 0
+#     else:
+#         return int((count_shipment*100)/valid_shipment)
+
+# def calculate_avg_bsas(sum_import,count_shipment): # calcula el promedio del costo de envios a bs as
+#     if count_shipment == 0:
+#         return 0
+#     else:
+#         return int(sum_import/count_shipment)

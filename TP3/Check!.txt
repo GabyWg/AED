@@ -15,7 +15,7 @@ A- Construir un menu que contenga los siguientes opciones
     -> Una sola linea por registro.
     -> Mostrar el pais en la misma linea del registro.
     -> Agregar de mostrar todos los registros, o mostrar unos X primeros, cargando X por teclado (Indicar cuantos registros hay, antes de hacerlo elegir).
-    -> Ordenar por shellsort.
+    -> Ordenar Selección Simple y luego por shellsort.
 
 4- Buscar si existe en el arreglo una direccion D y un tipo de envio E, siendo D y E valores que se cargan por teclado.
     -> Si existe mostrar todos los datos, sino mandar un mensaje que no existe.
