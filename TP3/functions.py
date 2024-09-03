@@ -1,7 +1,8 @@
 import register as reg
+from os import system
 
 def text_menu(): #Funcion donde contenemos el menu
-    text="""
+    text='''
 1- Cargar datos de envios por archivo de texto.
 2- Cargar datos de envios por teclado.
 3- Mostrar datos de los envios.
@@ -12,25 +13,27 @@ def text_menu(): #Funcion donde contenemos el menu
 8- Datos tipo de envio con mayor importe.
 9- Importe final promedio.
 0- Salida del programa.
-Select an option: """
+Select an option: '''
     return text
 
+
 def number_valid(min_num,max_num,sms): # Para validar el ingreso de numeros
-    n = int(input(sms))
-    while min_num > n or n > max_num:
-        print("Invalid option, select one of the available options.")
-        n = int(input(sms))
-    return n  
+    n = input(sms)
+    digit_flg = False if isdigit(n) == True else True
+    while str(min_num) > n or n > str(max_num) or digit_flg:
+        system("cls")
+        print(f'Invalid option.')
+        n = input(sms)
+        digit_flg = False if isdigit(n) == True else True
+    return int(n)
 
 
-def start_classes(v_envios=None,v_datashipment=None): # Para iniciar o resetear los vectores que contienen las clases
+def start_classes(v_envios=None): # Para iniciar o resetear los vectores que contienen las clases
     v_envios = []
-    v_datashipment = []
-
-    return v_envios,v_datashipment
+    return v_envios
 
 
-def load_data_text_shipment(v_ship,v_data,arch_name):
+def load_data_text_shipment(v_ship,arch_name):
     arch_text = main_arch(arch_name) 
     type_control = None
 
@@ -39,58 +42,68 @@ def load_data_text_shipment(v_ship,v_data,arch_name):
         if type_control == None:
             type_control = search_type_control(text_line)
         else:
-            analyze_line(text_line,type_control,v_ship,v_data)
+            analyze_line(text_line,type_control,v_ship)
         
     main_arch('-1', False, arch_text)   #Cierra el archivo.
 
-def load_data_keyboard_shipment(v_ship,v_data):
+def load_data_keyboard_shipment(v_ship):
     cod_pos_flg = address_flg = type_shipment_flg = waypay_flg = True
-    sms = "0- Enter data again.\n1- Continue.\nSelect an option: "
+    sms = '0- Enter data again.\n1- Continue.\nSelect an option: '
     struct_control = ''
 
 ################################################################################################
+
     while cod_pos_flg:
-        cod_pos = input("Enter the postal code: ")
+        cod_pos = input('Enter the postal code: ')
         country_shipment,province_shipment,charge_shipment = analyze_codpos(cod_pos)
-        print(f"The postal code entered is: {cod_pos}\n"
-              f"Postal code Country: {country_shipment}\n"
-              f"Postal code province: {province_shipment}\n"
-              f"Postal code shipping charge: {charge_shipment}\n")
+        system("cls")
+        print(f'The postal code entered is: {cod_pos}\n'
+              f'Postal code Country: {country_shipment}\n'
+              f'Postal code province: {province_shipment}\n'
+              f'Postal code shipping charge: {charge_shipment}\n')
         number_flg = number_valid(0,1,sms)
         if number_flg == 1:
             cod_pos_flg = False
+    system("cls")
 ################################################################################################
+
     while address_flg:
-        address = input("Enter the address: ")
+        address = input('Enter the address: ')
         while struct_control != 'HC' and struct_control != 'SC':
-            struct_control = input("Enter shipping struct HC(Hard Control) or SC(Soft Control): ").upper()
-            address_valid = True if 'SC' == struct_control else valid_address(address) 
-        print(f"The address entered is: {address}\n"
-            f"Type of shipment entered: {struct_control}\n")
+            struct_control = input('Enter shipping struct HC(Hard Control) or SC(Soft Control): ').upper()
+            address_valid = True if 'SC' == struct_control else valid_address(address)
+        system("cls")
+        print(f'The address entered is: {address}\n'
+            f'Type of shipment entered: {struct_control}\n')
         number_flg = number_valid(0,1,sms)
         if number_flg == 1:
             address_flg = False
+    system("cls")
 ################################################################################################
+
     while type_shipment_flg:
-        id_type_shipment = number_valid(0,6,"Enter the shipping type between values ​​0 and 6: ")
-        print(f"The shipping type entered is: {id_type_shipment}")
+        id_type_shipment = number_valid(0,6,'Enter the shipping type between values ​​0 and 6: ')
+        system("cls")
+        print(f'The shipping type entered is: {id_type_shipment}')
         number_flg = number_valid(0,1,sms)
         if number_flg == 1:
             type_shipment_flg = False
+    system("cls")
 ################################################################################################
+
     while waypay_flg:
-        waypay = number_valid(1,2,"Enter the shipping type between values 1(Cash) and 2(Credit Card): ")
-        print(f"The shipping type entered is: {waypay}")
+        waypay = number_valid(1,2,'Enter the shipping type between values 1(Cash) and 2(Credit Card): ')
+        system("cls")
+        print(f'The shipping type entered is: {waypay}')
         number_flg = number_valid(0,1,sms)
         if number_flg == 1:
             waypay_flg = False
+    system("cls")
 ################################################################################################
 
     cost_shipment = calculate_shipment(charge_shipment,id_type_shipment,waypay)
-
-    v_ship.append(reg.Envio(cod_pos,address,id_type_shipment,waypay))
-    v_data.append(reg.DataShipment(cost_shipment,address_valid,country_shipment,province_shipment)) # Construction is desc_type_shipment
-
+    v_ship.append(reg.Envio(cod_pos,address,id_type_shipment,waypay,cost_shipment,address_valid,country_shipment,province_shipment))
+    print(f"Se agregar los siguientes datos de envio.\n{v_ship[-1]}")
 
 def main_arch(name_text, flg_open = True, arch = None): #Funcion que abre el archivo que se le envia, al finalizar la lectura se le enviar otros parametros de otra funcion para cerrar el mismo
     if flg_open:
@@ -104,18 +117,14 @@ def search_type_control(line_text): # Recibe una linea de texto y revisa que tip
     return 'Hard Control' if 'HC' in line_text.upper() else 'Soft Control'
 
 
-def analyze_line (text_line,control,v_ship,v_data): # Funcion principal, analiza toda la linea de envio (codigo postal, )
+def analyze_line (text_line,control,v_ship): # Funcion principal, analiza toda la linea de envio (codigo postal, )
 
-    codpos_line,address_line,id_type_shipment_line,waypay_line = text_line[:9].strip(),text_line[9:29].strip(),int(text_line[29]),int(text_line[30]) 
-    
+    codpos_line,address_line,id_type_shipment_line,waypay_line = str(text_line[:9].strip()),str(text_line[9:29].strip()),int(text_line[29]),int(text_line[30]) 
     country_shipment,province_shipment,charge_shipment = analyze_codpos(codpos_line)
-    
     cost_shipment = calculate_shipment(charge_shipment,id_type_shipment_line,waypay_line)
-    
     address_valid = True if 'Soft Control' == control else valid_address(address_line) 
 
-    v_ship.append(reg.Envio(codpos_line,address_line,id_type_shipment_line,waypay_line))
-    v_data.append(reg.DataShipment(cost_shipment,address_valid,country_shipment,province_shipment)) # Construction is desc_type_shipment
+    v_ship.append(reg.Envio(codpos_line,address_line,id_type_shipment_line,waypay_line,cost_shipment,address_valid,country_shipment,province_shipment))
 
 
 def analyze_codpos(cod_pos): # Analiza el codigo postal, devuelve Pais, provincia y cargo del envio
@@ -191,27 +200,22 @@ def isdigit(text): # Saber si un conjunto de caracteres son todos digitos
 def calculate_shipment(charge_shipment,type_shipment,waypay): # Calcula el total del costo del envio, 
     type_shipment_cost_tup = (1100,1800,2450,8300,10900,14300,17900)
     waypay_tup = (0.9,1) # 1 = pago en Efectivo ; 2 = Pago Tarjeta 
-    
     cost_shipment = int(int(type_shipment_cost_tup[type_shipment] * charge_shipment) *   waypay_tup[waypay-1])
 
     return cost_shipment
 
+
 def valid_address(address_line): # Validacion de la direccion
     
     char_ant = '1'
-
     flg_digits = flg_char = flag_word_digit= False
 
     for char in address_line:
-        
         if not('a' <= char.lower() <= 'z' or '0' <= char <= '9' or char in ('.',' ')): # Busqueda de caracteres especiales
             return False
-        
         elif char != ' ' and char != '.':
-            
             if 'A' <= char <= 'Z' and 'A' <= char_ant <= 'Z': # Busqueda de mayusculas seguidas
                 return False
-    
             elif 'a' <= char.lower() <= 'z':
                 flg_char = True
             elif '0' <= char <= '9':
