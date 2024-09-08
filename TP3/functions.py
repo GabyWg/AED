@@ -34,7 +34,7 @@ def start_classes(v_envios=None): # Para iniciar o resetear los vectores que con
     return v_envios
 
 
-def load_data_text_shipment(v_ship,arch_name):
+def load_data_text_shipment(v_ship,arch_name,): # Para cargar datos via archivo de texto
     arch_text = main_arch(arch_name) 
     type_control = None
 
@@ -49,7 +49,7 @@ def load_data_text_shipment(v_ship,arch_name):
 
     return type_control
 
-def load_data_keyboard_shipment(v_ship):
+def load_data_keyboard_shipment(v_ship,type_struct): # Para cargar datos via ingreso de teclado
     cod_pos_flg = address_flg = type_shipment_flg = waypay_flg = True
     sms = '0- Enter data again.\n1- Continue.\nSelect an option: '
     struct_control = ''
@@ -72,12 +72,9 @@ def load_data_keyboard_shipment(v_ship):
 
     while address_flg:
         address = input('Enter the address: ')
-        while struct_control != 'HC' and struct_control != 'SC':
-            struct_control = input('Enter shipping struct HC(Hard Control) or SC(Soft Control): ').upper()
-            address_valid = True if 'SC' == struct_control else valid_address(address)
+        address_valid = True if 'Soft Control' == type_struct else valid_address(address)
         system("cls")
-        print(f'The address entered is: {address}\n'
-            f'Type of shipment entered: {struct_control}\n')
+        print(f'The address entered is: {address}\n')
         number_flg = number_valid(0,1,sms)
         if number_flg == 1:
             address_flg = False
@@ -249,10 +246,14 @@ def order_min_to_max_codpos(v_envios):
             v_envios[j] = temp
         div //= 2
 
-def print_shipments(v_envios,quan_row=-1):
-    quan_row = len(v_envios) if quan_row == -1 else quan_row
-    for i in range(quan_row):
-        print(v_envios[i])
+def print_shipments(v_envios,type_show='All',quan_row=-1):
+    if type_show == 'All':
+        for shipment in v_envios:
+            print(shipment)    
+    elif type_show == 'firts_n_ships':
+        for i in range(quan_row):
+            print(v_envios[i])
+
 
 def search_adress(v_envios,adress_search,type_shipment_search):
     vector_result = None
@@ -264,42 +265,43 @@ def search_adress(v_envios,adress_search,type_shipment_search):
     
     return vector_result
 
-def search_codpos(v_envios,codpos_search,type_shipment_search):
+def search_codpos(v_envios,codpos_search):
     vector_result = None
 
     for shipment in v_envios:
-        if codpos_search == shipment.cod_pos and type_shipment_search == shipment.type_shipment:
+        if codpos_search == shipment.cod_pos:
             shipment.waypay = 1 if shipment.waypay == 2 else 2
+            # shipment.cost_shipment *= (0.9 if shipment.waypay == 1 else (1/0.9)) # Si hay que cambiar el valor del costo del envio, descomentar.
             vector_result = shipment
             break
     
     return vector_result
 
-def shipment_count_type(v_envios,type_control):
+def shipment_count_type(v_envios):
     vector_result = [0]*7  
-    if type_control == 'Hard Control':
-        for i in v_envios:
-                if i.valid_address:
-                    vector_result[i.type_shipment] += 1
-    else:
-        for i in v_envios:
-                vector_result[i.type_shipment] += 1
+    for i in v_envios:
+        if i.valid_address:
+            vector_result[i.type_shipment] += 1
+
     return vector_result
 
-def shipment_sum_import_type(v_envios,type_control):
+def shipment_sum_import_type(v_envios):
     vector_result = [0]*7
     full_import = 0
-    if type_control == 'Hard Control':
-        for i in v_envios:
-                if i.valid_address:
-                    vector_result[i.type_shipment] += i.cost_shipment
-                    full_import += i.cost_shipment
-    else:
-        for i in v_envios:
-                vector_result[i.type_shipment] += i.cost_shipment
-                full_import += i.cost_shipment
+    for i in v_envios:
+        if i.valid_address:
+            vector_result[i.type_shipment] += i.cost_shipment
+            full_import += i.cost_shipment
 
     return vector_result,full_import
+
+def avg_shipment_cost(v_envios):
+    count_shipment = len(v_envios)
+    sum_shipment = 0
+    for ship in v_envios:
+        sum_shipment += ship.cost_shipment
+    
+    return sum_shipment/count_shipment
 
 def calc_porc_type_ship(sum_import_type,full_import):
     vector_result = [0]*7 
@@ -307,27 +309,10 @@ def calc_porc_type_ship(sum_import_type,full_import):
         vector_result[i] = round((sum_import_type[i]/full_import)*100,2)
     return vector_result
 
-# def max_type_shipment(simple_letter, registered_letter, express_letter): # Me calcula el maximo de cantidad de los tipos de cartas y me devuelve el nombre del mismo
-#     type_shipment_tup = ('Carta Simple','Carta Certificada','Carta Expresa')
-#     if  simple_letter > registered_letter:
-#         if simple_letter > express_letter:
-#             type_max = 0
-#         else:
-#             type_max = 2
-#     elif registered_letter > express_letter:
-#         type_max = 1
-#     else:
-#         type_max = 2
-#     return type_shipment_tup[type_max]
+def count_ship_avg_min_cost(v_envios,avg_shipment):
+    count_ship_min = 0
+    for shipment in v_envios:
+        if shipment.cost_shipment < avg_shipment:
+            count_ship_min += 1
 
-# def calculate_porc_inter(count_shipment,valid_shipment): # calcula el porcentaje de los envios internacionales sobre los totales
-#     if valid_shipment == 0:
-#         return 0
-#     else:
-#         return int((count_shipment*100)/valid_shipment)
-
-# def calculate_avg_bsas(sum_import,count_shipment): # calcula el promedio del costo de envios a bs as
-#     if count_shipment == 0:
-#         return 0
-#     else:
-#         return int(sum_import/count_shipment)
+    return count_ship_min
