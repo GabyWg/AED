@@ -26,7 +26,8 @@ A- Construir un menu que contenga los siguientes opciones
     -> Si no existe, mandar un mensaje que no existe.
     -> La busqueda se tiene que frenar con el primer registro encontrado.
 
-6- Si el tipo de TimeStamp es HC, determinar la cantidad de envios validos, para cada uno de los tipos de envios posibles. Si es SC cantidad de envios para los tipos de envios posibles.
+6- Si el tipo de TimeStamp es HC, determinar la cantidad de envios validos, para cada uno de los tipos de envios posibles. 
+   Si es SC cantidad de envios para los tipos de envios posibles.
     -> Hacer un vector de conteo.
 
 7- Si el tipo de TimeStamp es HC, determinar importe final de los envios valido, para cada tipo de envio posible. Si es SC el importe final para todos los envios, para cada tipo de envio posible

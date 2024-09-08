@@ -10,13 +10,13 @@ class Envio:
         self.province_shipment = pr_sh
 
     def __str__(self):
-        text = self.cod_pos + ' - '
-        text += self.address + ' - '
-        text += ('Direccion Valida' if self.valid_address else 'Direccion Invalida') + ' - ' 
+        text = "{:<10}".format(self.cod_pos) + ' - '
+        text += "{:<20}".format(self.address) + ' - '
+        text += "{:<18}".format('Direccion Valida' if self.valid_address else 'Direccion Invalida') + ' - ' 
         text += str(self.type_shipment) + ' - '
         text += str(self.waypay) + ' - '
-        text += str(round(self.cost_shipment,2)) + ' - '
-        text += self.country_shipment + ' - '
-        text += self.province_shipment
+        text += "{:>6}".format(round(self.cost_shipment,2)) + ' - '
+        text += "{:<10}".format(self.country_shipment) + ' - '
+        text += "{:<20}".format(self.province_shipment)
         return text
     
