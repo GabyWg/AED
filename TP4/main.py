@@ -3,8 +3,6 @@ import functions as func
 CSV_ARCH = 'envios-tp4.csv'
 BINARY_ARCH = "envios-tp4.dat"
 
-
-
 def main():
 
     turns = True

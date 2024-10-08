@@ -303,23 +303,6 @@ def order_min_to_max_codpos(v_ship):
         div //= 2
 
 
-''' def array_in_order(v, envio):
-    izq, der = 0, len(v) - 1
-    pos = len(v)
-    while izq <= der:
-        c = (izq + der) // 2
-        if v[c].cod_pos == envio.cod_pos:
-            pos = c
-            break
-        if envio.cod_pos < v[c].cod_pos:
-            der = c - 1
-        else:
-            izq = c + 1
-    if izq > der:
-        pos = izq
-    v[pos:pos] = [reg]'''
-
-
 def generate_order_array(arch_name, v_ship):
     arch = main_arch(arch_name, 'rb')
     tam = os.path.getsize(arch_name)
